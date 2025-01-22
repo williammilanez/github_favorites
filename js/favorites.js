@@ -38,6 +38,12 @@ export class Favorites {
         this.entries = JSON.parse(localStorage.getItem('@github-favorites:')) || []
     }
 
+    // adicionar / buscar user no github
+    // função assíncrona - promisse (aguarda para depois continuar nas próximas linhas)
+    async add(username) {
+        const user = await GithubUser.search(username) // aguarda essa promessa (essa linha)
+    }
+
     // deletar
     delete(user) {
         // Higher-order functions (map, filter, find, reduce)
@@ -57,6 +63,16 @@ export class FavoritesView extends Favorites {
         this.tbody = this.root.querySelector('table tbody')
 
         this.update()
+        this.onadd()
+    }
+
+    onadd() {
+        const addButton = this.root.querySelector('.search button')
+        addButton.onclick = () => {
+            const { value } = this.root.querySelector('.search input')
+
+            this.add(value)
+        }
     }
 
     // atualiza os usuários
