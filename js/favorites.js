@@ -9,20 +9,7 @@ export class Favorites {
     // função para carregamento dos dados
     load() {
         // os dados serão uma array contendo um objeto
-        this.entries = [
-            {
-                login: 'williammilanez',
-                name: "William Milanez",
-                public_repos: '23',
-                followers: '0'
-            },
-            {
-                login: 'yurimagagnatto',
-                name: "Yuri Magagnatto",
-                public_repos: '5',
-                followers: '20'
-            }
-        ]
+        this.entries = JSON.parse(localStorage.getItem('@github-favorites:')) || []
     }
 
     // deletar
@@ -31,7 +18,8 @@ export class Favorites {
         // filter, serve para filtrar
         const filteredEntries = this.entries.filter(entry => entry.login !== user.login)
 
-        console.log(filteredEntries)
+        this.entries = filteredEntries
+        this.update()
     }
 }
 
