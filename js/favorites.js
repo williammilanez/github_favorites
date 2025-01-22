@@ -38,10 +38,28 @@ export class Favorites {
         this.entries = JSON.parse(localStorage.getItem('@github-favorites:')) || []
     }
 
+    // função para salvar os usuários (adições e remoções) no local storage
+    save() {
+        localStorage.setItem('@github-favorites:', JSON.stringify(this.entries)) // transforma o this.entries em uma string em formato de JSON para salvar nesse local storage
+    }
+
     // adicionar / buscar user no github
     // função assíncrona - promisse (aguarda para depois continuar nas próximas linhas)
     async add(username) {
-        const user = await GithubUser.search(username) // aguarda essa promessa (essa linha)
+        try { // tente
+            const user = await GithubUser.search(username) // aguarda essa promessa (essa linha)
+
+            if(user.login === undefined) {
+                throw new Error('Usuário não encontrado!') // objeto de erro, vai para o catch
+            } 
+
+            this.entries = [user, ...this.entries] // criano nova array, colocando novo usuário e trazendo de volta todos os elementos que tinha antes
+            this.update()
+            this.save()
+
+        }   catch(error) {
+            alert(error.message)
+        }
     }
 
     // deletar
@@ -52,6 +70,7 @@ export class Favorites {
 
         this.entries = filteredEntries
         this.update()
+        this.save()
     }
 }
 
